@@ -9,7 +9,7 @@ const start = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use("/", require("./routes/home.js"));
+  app.use("*", require("./routes/notfound.js"));
   app.use("/anime", require("./routes/aniroute.js"));
   app.listen(process.env.PORT, () => console.log("Nu flyger vi!"));
 };
