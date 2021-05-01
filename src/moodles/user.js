@@ -7,4 +7,4 @@ const userShchema = new Schema({
   email: String,
 });
 
-module.exports = mongoose.model("User", userShchema);
+module.exports = mongoose.model("User", userShchema, "users");
