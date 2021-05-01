@@ -5,9 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d dist",
-    "start": "node ./src/index.js",
-    "babel-node": "babel-node --presets=latest"
+    "start": "node ./src/index.js"
   },
   "engines": {
     "node": "15.12.x"
