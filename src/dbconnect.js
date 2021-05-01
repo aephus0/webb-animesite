@@ -6,7 +6,7 @@ const connect = async () => {
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      dbName: "animelist",
+      dbName: "animedesu",
     }
   );
   console.log("Connected to MongoDB");
