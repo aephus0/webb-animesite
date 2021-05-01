@@ -1,9 +1,14 @@
 const { body } = require("express-validator");
 
-const newanimeitem = [
-  body("title")
+const updateanime = [
+  body("aniId")
     .exists()
-    .withMessage("No title was provided")
+    .withMessage("ID was not provided")
+    .isNumeric()
+    .withMessage("ID is not a number")
+    .isLength({ min: 5, max: 5 })
+    .withMessage("Illegal length of ID"),
+  body("title")
     .isString()
     .withMessage("Title is not a string")
     .isLength({ min: 3, max: 32 })
@@ -16,4 +21,4 @@ const newanimeitem = [
     .withMessage("Description is not a string"),
 ];
 
-module.exports = newanimeitem;
+module.exports = updateanime;

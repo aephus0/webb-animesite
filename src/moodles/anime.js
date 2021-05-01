@@ -9,8 +9,8 @@ const animeSchema = new Schema({
   date: { type: Date, default: Date.now },
   finished: { type: Boolean, default: false },
   meta: {
-    reviews: Number,
-    favs: Number,
+    reviews: { type: Number, default: 0 },
+    favs: { type: Number, default: 0 },
   },
 });
 
