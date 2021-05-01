@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
-
+require("dotenv").config();
 const connect = async () => {
-  await mongoose.connect(
-    "mongodb+srv://megaadmin:azeqaPnC41Uamh4b@cluster0.b9g4b.mongodb.net/davbotbotwatcher?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      dbName: "animedesu",
-    }
-  );
+  await mongoose.connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: process.env.DB_NAME,
+  });
   console.log("Connected to MongoDB");
 };
 
