@@ -4,6 +4,7 @@ const Anime = require("../moodles/anime.js");
 const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
 const newanimeitem = require("../validators/anivalidator.js");
 const updateanime = require("../validators/updatevalidator.js");
+const deleteanime = require("../validators/deletevalidator.js");
 const { validationResult } = require("express-validator");
 
 router.use((req, res, next) => {
@@ -96,6 +97,26 @@ router.put("/updateanime", updateanime, async (req, res) => {
     return res.json(new SuccessRes(result));
   } catch (err) {
     console.log("error updating item", err);
+    res.json(new ErrorRes("Something went horribly wrong, try again later"));
+  }
+});
+
+router.delete("/deleteanime", deleteanime, async (req, res) => {
+  const errors = validationResult(deleteanime);
+  if (!errors.isEmpty) {
+    return res.json(new FailRes(errors));
+  }
+  try {
+    const aniput = Anime.findOne({
+      aniId: req.body.aniId,
+    });
+    if (aniput === null) {
+      return res.json(new ErrorRes("the id was not found"));
+    }
+    const result = await Anime.deleteOne({ aniId: req.body.aniId });
+    res.json(new SuccessRes(result));
+  } catch (err) {
+    console.log("error deleting item", err);
     res.json(new ErrorRes("Something went horribly wrong, try again later"));
   }
 });
