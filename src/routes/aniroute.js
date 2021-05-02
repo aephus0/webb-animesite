@@ -1,18 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const Anime = require("../moodles/anime.js");
+const AniList = require("../moodles/anilist.js");
 const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
 const newanimeitem = require("../validators/anivalidator.js");
 const updateanime = require("../validators/updatevalidator.js");
 const deleteanime = require("../validators/deletevalidator.js");
 const { validationResult } = require("express-validator");
 
+// Log the date and request-type of each request
 router.use((req, res, next) => {
   console.log("Time: ", Date.now(), "request-type: ", req.method);
   next();
 });
 
+// Get all current anime items from DB
 router.get("/", async (req, res) => {
+  if (req.header("content-type") !== "application/json")
+    return res.json(new ErrorRes("Header must be application/json"));
   try {
     const docs = await Anime.find({});
     res.send(docs);
@@ -24,7 +29,10 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get specific anime item for DB
 router.get("/:id", async (req, res) => {
+  if (req.header("content-type") !== "application/json")
+    return res.json(new ErrorRes("Header must be application/json"));
   try {
     const specAnime = await Anime.findOne({
       aniId: req.params.id,
@@ -44,7 +52,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Route to post new anime item
 router.post("/", newanimeitem, async (req, res) => {
+  if (req.header("content-type") !== "application/json")
+    return res.json(new ErrorRes("Header must be application/json"));
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json(new FailRes(errors));
@@ -78,13 +89,16 @@ router.post("/", newanimeitem, async (req, res) => {
   }
 });
 
+// Route for updating anime
 router.put("/", updateanime, async (req, res) => {
+  if (req.header("content-type") !== "application/json")
+    return res.json(new ErrorRes("Header must be application/json"));
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json(new FailRes(errors));
   }
   try {
-    const aniput = Anime.findOne({
+    const aniput = await Anime.findOne({
       aniId: req.body.aniId,
     });
     if (aniput === null) {
@@ -112,13 +126,14 @@ router.put("/", updateanime, async (req, res) => {
   }
 });
 
+// Route for deleting anime item
 router.delete("/", deleteanime, async (req, res) => {
   const errors = validationResult(deleteanime);
   if (!errors.isEmpty) {
     return res.json(new FailRes(errors));
   }
   try {
-    const aniput = Anime.findOne({
+    const aniput = await Anime.findOne({
       aniId: req.body.aniId,
     });
     if (aniput === null) {
