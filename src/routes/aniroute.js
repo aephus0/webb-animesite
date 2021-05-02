@@ -44,7 +44,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/newanime", newanimeitem, async (req, res) => {
+router.post("/", newanimeitem, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json(new FailRes(errors));
@@ -78,7 +78,7 @@ router.post("/newanime", newanimeitem, async (req, res) => {
   }
 });
 
-router.put("/updateanime", updateanime, async (req, res) => {
+router.put("/", updateanime, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json(new FailRes(errors));
@@ -112,7 +112,7 @@ router.put("/updateanime", updateanime, async (req, res) => {
   }
 });
 
-router.delete("/deleteanime", deleteanime, async (req, res) => {
+router.delete("/", deleteanime, async (req, res) => {
   const errors = validationResult(deleteanime);
   if (!errors.isEmpty) {
     return res.json(new FailRes(errors));
