@@ -90,9 +90,20 @@ router.put("/updateanime", updateanime, async (req, res) => {
     if (aniput === null) {
       return res.json(new ErrorRes("the id was not found"));
     }
+    var newani = {};
+    newani.title = aniput.title;
+    newani.description = aniput.description;
+
+    if (typeof req.body.title !== "null" || "undefined") {
+      newani.title = req.body.title;
+    }
+    if (typeof req.body.description !== "null" || "undefined") {
+      newani.description = req.body.description;
+    }
+
     const result = await Anime.updateOne(
       { aniId: req.body.aniId },
-      { title: req.body.title, description: req.body.description }
+      { title: newani.title, description: newani.description }
     );
     return res.json(new SuccessRes(result));
   } catch (err) {
