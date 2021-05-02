@@ -6,6 +6,7 @@ const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
 const newanimeitem = require("../validators/anivalidator.js");
 const updateanime = require("../validators/updatevalidator.js");
 const deleteanime = require("../validators/deletevalidator.js");
+const validateBearer = require("../validators/bearervalidator.js");
 const { validationResult } = require("express-validator");
 
 // Log the date and request-type of each request
@@ -53,7 +54,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Route to post new anime item
-router.post("/", newanimeitem, async (req, res) => {
+router.post("/", validateBearer, newanimeitem, async (req, res) => {
   if (req.header("content-type") !== "application/json")
     return res.json(new ErrorRes("Header must be application/json"));
   const errors = validationResult(req);
@@ -90,7 +91,7 @@ router.post("/", newanimeitem, async (req, res) => {
 });
 
 // Route for updating anime
-router.put("/", updateanime, async (req, res) => {
+router.put("/", validateBearer, updateanime, async (req, res) => {
   if (req.header("content-type") !== "application/json")
     return res.json(new ErrorRes("Header must be application/json"));
   const errors = validationResult(req);
@@ -127,7 +128,7 @@ router.put("/", updateanime, async (req, res) => {
 });
 
 // Route for deleting anime item
-router.delete("/", deleteanime, async (req, res) => {
+router.delete("/", validateBearer, deleteanime, async (req, res) => {
   const errors = validationResult(deleteanime);
   if (!errors.isEmpty) {
     return res.json(new FailRes(errors));

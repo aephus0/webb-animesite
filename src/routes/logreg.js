@@ -4,6 +4,7 @@ const User = require("../moodles/user.js");
 const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
 const usrvalidator = require("../validators/uservalidator.js");
 const loginuser = require("../validators/loginuser.js");
+const validateBearer = require("../validators/bearervalidator.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -69,13 +70,8 @@ router.post("/login", loginuser, async (req, res) => {
     var accesstoken = jwt.sign({ id: usr._id }, process.env.SECRET, {
       expiresIn: 86400,
     });
-    res.json(
-      new SuccessRes({
-        email: usr.email,
-        username: usr.username,
-        token: accesstoken,
-      })
-    );
+
+    res.json(new SuccessRes({ accesstoken }));
   } catch (err) {
     console.log("Error loggin in", err);
     return res.json(
