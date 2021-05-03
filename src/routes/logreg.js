@@ -11,6 +11,11 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 require("dotenv").config();
 
+router.use((req, res, next) => {
+  console.log("Time: ", Date.now(), "request-type: ", req.method);
+  next();
+});
+
 router.post("/register", usrvalidator, async (req, res) => {
   var errors = validationResult(req);
   if (!errors.isEmpty()) {

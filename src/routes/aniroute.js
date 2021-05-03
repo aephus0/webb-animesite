@@ -55,12 +55,22 @@ router.get("/:id", async (req, res) => {
 
 // Route to post new anime item
 router.post("/", validateBearer, newanimeitem, async (req, res) => {
-  if (req.header("content-type") !== "application/json")
-    return res.json(new ErrorRes("Header must be application/json"));
+  try {
+    if (req.header("content-type") !== "application/json")
+      return res.json(new ErrorRes("Header must be application/json"));
+  } catch (err) {
+    console.log("There was an error parsing the JSON data", err);
+    return res.json(
+      new ErrorRes(
+        'Something went horribly wrong while processing the JSON data, did you forget the ""?'
+      )
+    );
+  }
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json(new FailRes(errors));
   }
+
   try {
     const anime = await Anime.findOne({
       title: req.body.title,
