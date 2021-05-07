@@ -20,7 +20,7 @@ const start = async () => {
   app.use(jsonErrorHandler);
   app.use("/anime", require("./routes/aniroute.js"));
   app.use("/user/", require("./routes/logreg.js"));
-  app.use("/user/avatar", require("./routes/imgroute.js"));
+  //app.use("/user/avatar", require("./routes/imgroute.js"));
   app.use("*", require("./routes/notfound.js"));
   app.listen(process.env.PORT, () => console.log("Nu flyger vi!"));
 };

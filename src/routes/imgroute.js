@@ -1,4 +1,4 @@
-const express = require("express");
+/*const express = require("express");
 const router = express.Router();
 const { validationResult } = require("express-validator");
 const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
@@ -10,7 +10,9 @@ router.get("/upload", (req, res, next) => {
   console.log("its working");
 });
 router.post("/upload", upload.single("avatar"), (req, res, next) => {
+  console.log(req.file.filename);
   console.log(req.file.size);
 });
 
 module.exports = router;
+*/
