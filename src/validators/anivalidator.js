@@ -6,7 +6,7 @@ const newanimeitem = [
     .withMessage("No title was provided")
     .isString()
     .withMessage("Title is not a string")
-    .isLength({ min: 3, max: 32 })
+    .isLength({ min: 3, max: 50 })
     .withMessage("Illegal title length (Min: 3, Max: 32"),
 
   body("description")
