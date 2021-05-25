@@ -8,7 +8,7 @@ const updateanime = require("../validators/updatevalidator.js");
 const deleteanime = require("../validators/deletevalidator.js");
 const validateBearer = require("../validators/bearervalidator.js");
 const { validationResult } = require("express-validator");
-
+const generate = require("../randomID");
 // Log the date and request-type of each request
 router.use((req, res, next) => {
   console.log("Time: ", Date.now(), "request-type: ", req.method);
@@ -79,7 +79,7 @@ router.post("/", validateBearer, newanimeitem, async (req, res) => {
     if (anime !== null) {
       return res.json(new FailRes({ title: "The title already exists" }));
     }
-    var id = Math.floor(Math.random() * 90000) + 10000;
+    var id = generate(5);
     const newID = await Anime.findOne({
       aniId: id,
     });

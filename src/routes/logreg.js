@@ -9,6 +9,7 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
+const generate = require("../randomID.js");
 require("dotenv").config();
 
 router.use((req, res, next) => {
@@ -33,6 +34,7 @@ router.post("/register", usrvalidator, async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 10),
+      id: generate(6),
     });
     res.json(
       new SuccessRes({

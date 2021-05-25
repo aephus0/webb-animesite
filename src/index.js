@@ -22,7 +22,7 @@ const start = async () => {
   app.use("/user/", require("./routes/logreg.js"));
   //app.use("/user/avatar", require("./routes/imgroute.js"));
   app.use("*", require("./routes/notfound.js"));
-  app.listen(process.env.PORT, () => console.log("Nu flyger vi!"));
+  app.listen(process.env.PORT || 3000, () => console.log("Nu flyger vi!"));
 };
 
 start();
