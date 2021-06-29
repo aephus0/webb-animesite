@@ -6,7 +6,10 @@ const animeSchema = new Schema({
   aniId: Number,
   title: String,
   description: String,
-  date: { type: Date, default: Date.now },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
   finished: { type: Boolean, default: false },
   meta: {
     reviews: { type: Number, default: 0 },
