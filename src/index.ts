@@ -1,11 +1,15 @@
-const express = require("express");
-const db = require("./dbconnect");
+declare function require(path: string): any;
+
+import express from "express";
+import { connect } from "./dbconnect";
 require("dotenv").config();
-const helmet = require("helmet");
-const cors = require("cors");
-const multer = require("multer");
+
+import * as helmet from "helmet";
+import * as cors from "cors";
+import * as multer from "multer";
+
 const start = async () => {
-  await db.connect();
+  await connect();
   // Handles error thrown by JSON.parse() when the json is illegal
   const jsonErrorHandler = async (err, req, res, next) => {
     res.status(500).send({ error: "Error parsing JSON" });
