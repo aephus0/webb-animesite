@@ -1,5 +1,4 @@
-const { body } = require("express-validator");
-
+import { body } from "express-validator";
 const newanimeitem = [
   body("title")
     .exists()
@@ -17,4 +16,4 @@ const newanimeitem = [
     .withMessage("Description is not a string"),
 ];
 
-module.exports = newanimeitem;
+export default newanimeitem;

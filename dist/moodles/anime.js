@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import pkg from "mongoose";
+const { Schema, model } = pkg;
 const animeSchema = new Schema({
-    aniId: Number,
+    aniId: String,
     title: String,
     description: String,
     date: {
@@ -14,4 +14,5 @@ const animeSchema = new Schema({
         favs: { type: Number, default: 0 },
     },
 });
-module.exports = mongoose.model("Anime", animeSchema, "animes");
+export const Anime = model("Anime", animeSchema, "animes");
+//module.exports = mongoose.model("Anime", animeSchema, "animes");

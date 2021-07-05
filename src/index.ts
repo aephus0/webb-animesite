@@ -1,17 +1,17 @@
-declare function require(path: string): any;
-
 import express from "express";
-import { connect } from "./dbconnect";
-require("dotenv").config();
-
-import * as helmet from "helmet";
-import * as cors from "cors";
+import connect from "./dbconnect.js";
+import * as dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
 import * as multer from "multer";
-
+import aniroute from "./routes/aniroute.js";
+import logreg from "./routes/logreg.js";
+import notfound from "./routes/notfound.js";
+dotenv.config();
 const start = async () => {
   await connect();
   // Handles error thrown by JSON.parse() when the json is illegal
-  const jsonErrorHandler = async (err, req, res, next) => {
+  const jsonErrorHandler = async (err: any, req: any, res: any, next: any) => {
     res.status(500).send({ error: "Error parsing JSON" });
   };
 
@@ -22,10 +22,10 @@ const start = async () => {
   app.use(express.json());
   app.use(helmet());
   app.use(jsonErrorHandler);
-  app.use("/anime", require("./routes/aniroute.js"));
-  app.use("/user/", require("./routes/logreg.js"));
+  app.use("/anime", aniroute);
+  app.use("/user/", logreg);
   //app.use("/user/avatar", require("./routes/imgroute.js"));
-  app.use("*", require("./routes/notfound.js"));
+  app.use("*", notfound);
   app.listen(process.env.PORT || 3000, () => console.log("Nu flyger vi!"));
 };
 

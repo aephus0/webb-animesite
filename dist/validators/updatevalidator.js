@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+import { body } from "express-validator";
 const updateanime = [
     body("aniId")
         .exists()
@@ -8,4 +8,4 @@ const updateanime = [
         .isLength({ min: 5, max: 5 })
         .withMessage("Illegal length of ID"),
 ];
-module.exports = updateanime;
+export default updateanime;

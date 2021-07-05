@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import pkg from "mongoose";
+const { Schema, model } = pkg;
 const userShchema = new Schema({
     username: String,
     email: String,
     password: String,
     isVerified: Boolean,
-    id: Number,
+    id: String,
 });
-module.exports = mongoose.model("User", userShchema, "users");
+export const User = model("User", userShchema, "users");

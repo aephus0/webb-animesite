@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+import { body } from "express-validator";
 const loginuser = [
     body("email")
         .exists()
@@ -7,4 +7,4 @@ const loginuser = [
         .withMessage("Must be a valid email"),
     body("password").exists().withMessage("No password was provided"),
 ];
-module.exports = loginuser;
+export default loginuser;

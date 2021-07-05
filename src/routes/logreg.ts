@@ -1,45 +1,47 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const User = require("../moodles/user.js");
-const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
-const usrvalidator = require("../validators/uservalidator.js");
-const loginuser = require("../validators/loginuser.js");
-const validateBearer = require("../validators/bearervalidator.js");
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const session = require("express-session");
-const generate = require("../randomID.js");
-require("dotenv").config();
+import { User, IUser } from "../moodles/user.js";
+import { ErrorRes, SuccessRes, FailRes } from "../responses.js";
+import usrvalidator from "../validators/uservalidator.js";
+import loginuser from "../validators/loginuser.js";
+import validateBearer from "../validators/bearervalidator.js";
+import { validationResult } from "express-validator";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import session from "express-session";
+import generate from "../randomID.js";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 router.use((req, res, next) => {
   console.log("Time: ", Date.now(), "request-type: ", req.method);
   next();
 });
 
-router.post("/register", usrvalidator, async (req, res) => {
+router.post("/register", usrvalidator, async (req: any, res: any) => {
   var errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json(new FailRes(errors));
+    return res.json(new FailRes("Fail", errors));
   }
   try {
-    var exuser = await User.findOne({
+    var exuser: IUser = await User.findOne({
       email: req.body.email,
     });
     if (exuser !== null) {
       return res.json(new ErrorRes("User with that email already exists"));
     }
 
-    User.create({
+    const user: IUser = await User.create({
       username: req.body.username,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 10),
       id: generate(6),
     });
     res.json(
-      new SuccessRes({
-        username: req.body.username,
-        email: req.body.email,
+      new SuccessRes("Success", {
+        username: user.username,
+        email: user.email,
       })
     );
   } catch (err) {
@@ -50,18 +52,18 @@ router.post("/register", usrvalidator, async (req, res) => {
   }
 });
 
-router.post("/login", loginuser, async (req, res) => {
+router.post("/login", loginuser, async (req: any, res: any) => {
   var errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json(new FailRes(errors));
+    return res.json(new FailRes("Fail", errors));
   }
   try {
-    var usr = await User.findOne({
+    var usr: IUser = await User.findOne({
       email: req.body.email,
     });
     if (usr === null) {
       return res.json(
-        new FailRes({
+        new FailRes("Fail", {
           email: "email not found",
         })
       );
@@ -69,16 +71,16 @@ router.post("/login", loginuser, async (req, res) => {
     var validPassword = bcrypt.compareSync(req.body.password, usr.password);
     if (!validPassword) {
       return res.json(
-        new FailRes({
+        new FailRes("Fail", {
           password: "invalid password",
         })
       );
     }
-    var accesstoken = jwt.sign({ id: usr._id }, process.env.SECRET, {
+    let accesstoken = jwt.sign({ id: usr._id }, process.env.SECRET, {
       expiresIn: 86400,
     });
 
-    res.json(new SuccessRes({ accesstoken }));
+    res.json(new SuccessRes("Success", { accesstoken }));
   } catch (err) {
     console.log("Error loggin in", err);
     return res.json(
@@ -87,4 +89,4 @@ router.post("/login", loginuser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

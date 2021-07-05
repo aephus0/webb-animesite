@@ -1,26 +1,39 @@
 class Response {
 }
-class ErrorRes extends Response {
-    constructor(message, code, data) {
+export class ErrorRes extends Response {
+    message;
+    code;
+    data;
+    constructor(status = "error", message, code, data) {
         super();
-        this.status = "error";
+        this.message = message;
+        this.code = code;
+        this.data = data;
+        status;
         this.message = message;
         this.code = code;
         this.data = data;
     }
 }
-class SuccessRes extends Response {
-    constructor(data) {
+export class SuccessRes extends Response {
+    status;
+    data;
+    constructor(status, data) {
         super();
-        this.status = "success";
+        this.status = status;
+        this.data = data;
+        this.status = "Success";
         this.data = data;
     }
 }
-class FailRes extends Response {
-    constructor(data) {
+export class FailRes extends Response {
+    status;
+    data;
+    constructor(status, data) {
         super();
-        this.status = "fail";
+        this.status = status;
+        this.data = data;
+        this.status = "Fail";
         this.data = data;
     }
 }
-module.exports = { ErrorRes, SuccessRes, FailRes };

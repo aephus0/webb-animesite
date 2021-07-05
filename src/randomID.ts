@@ -1,4 +1,4 @@
-const generate = (n) => {
+const generate = (n: number): string => {
   var add = 1,
     max = 12 - add; // 12 is the min safe number Math.random() can generate without it starting to pad the end with zeros.
 
@@ -13,4 +13,4 @@ const generate = (n) => {
   return ("" + number).substring(add);
 };
 
-module.exports = generate;
+export default generate;

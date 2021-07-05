@@ -1,14 +1,15 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const Anime = require("../moodles/anime.js");
-const AniList = require("../moodles/anilist.js");
-const { ErrorRes, SuccessRes, FailRes } = require("../responses.js");
-const newanimeitem = require("../validators/anivalidator.js");
-const updateanime = require("../validators/updatevalidator.js");
-const deleteanime = require("../validators/deletevalidator.js");
-const validateBearer = require("../validators/bearervalidator.js");
-const { validationResult } = require("express-validator");
-const generate = require("../randomID");
+import { Anime, IAnime } from "../moodles/anime.js";
+import AniList from "../moodles/anilist.js";
+import { ErrorRes, SuccessRes, FailRes } from "../responses.js";
+import newanimeitem from "../validators/anivalidator.js";
+import updateanime from "../validators/updatevalidator.js";
+import deleteanime from "../validators/deletevalidator.js";
+import validateBearer from "../validators/bearervalidator.js";
+import { validationResult } from "express-validator";
+import generate from "../randomID.js";
+
 // Log the date and request-type of each request
 router.use((req, res, next) => {
   console.log("Time: ", Date.now(), "request-type: ", req.method);
@@ -21,7 +22,7 @@ router.get("/", async (req, res) => {
     return res.json(new ErrorRes("Header must be application/json"));
   try {
     const docs = await Anime.find({});
-    res.send(docs);
+    return res.send(docs);
   } catch (err) {
     console.log("error fetching items", err);
     return res.json(
@@ -35,40 +36,43 @@ router.get("/:id", async (req, res) => {
   if (req.header("content-type") !== "application/json")
     return res.json(new ErrorRes("Header must be application/json"));
   try {
-    const specAnime = await Anime.findOne({
+    const specAnime: IAnime = await Anime.findOne({
       aniId: req.params.id,
     });
 
     if (specAnime === null) {
       return res.json(
-        new FailRes({
+        new FailRes("Fail", {
           aniId: "id not found",
         })
       );
     }
-    res.send(specAnime);
+    return res.send(specAnime);
   } catch (err) {
     console.log("error fetching item by id", err);
-    res.json(new ErrorRes("Something went horribly wrong, try again later"));
+    return res.json(
+      new ErrorRes("Error", "Something went horribly wrong, try again later")
+    );
   }
 });
 
 // Route to post new anime item
-router.post("/", validateBearer, newanimeitem, async (req, res) => {
+router.post("/", validateBearer, newanimeitem, async (req: any, res: any) => {
   try {
     if (req.header("content-type") !== "application/json")
-      return res.json(new ErrorRes("Header must be application/json"));
+      return res.json(new ErrorRes("Error", "Header must be application/json"));
   } catch (err) {
     console.log("There was an error parsing the JSON data", err);
     return res.json(
       new ErrorRes(
+        "Error",
         'Something went horribly wrong while processing the JSON data, did you forget the ""?'
       )
     );
   }
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json(new FailRes(errors));
+    return res.json(new FailRes("Fail", errors));
   }
 
   try {
@@ -77,7 +81,9 @@ router.post("/", validateBearer, newanimeitem, async (req, res) => {
     });
 
     if (anime !== null) {
-      return res.json(new FailRes({ title: "The title already exists" }));
+      return res.json(
+        new FailRes("Fail", { title: "The title already exists" })
+      );
     }
     var id = generate(5);
     const newID = await Anime.findOne({
@@ -85,7 +91,7 @@ router.post("/", validateBearer, newanimeitem, async (req, res) => {
     });
 
     if (newID !== null) {
-      return res.json(new FailRes({ aniId: "ID already in use" }));
+      return res.json(new FailRes("Fail", { aniId: "ID already in use" }));
     }
 
     const result = await Anime.create({
@@ -93,36 +99,39 @@ router.post("/", validateBearer, newanimeitem, async (req, res) => {
       title: req.body.title,
       description: req.body.description,
     });
-    return res.json(new SuccessRes(result));
+    return res.json(new SuccessRes("Success", result));
   } catch (err) {
     console.log("error adding new item ", err);
-    res.json(new ErrorRes("Something went horribly wrong, try again later"));
+    res.json(
+      new ErrorRes("Error", "Something went horribly wrong, try again later")
+    );
   }
 });
 
 // Route for updating anime
-router.put("/", validateBearer, updateanime, async (req, res) => {
+router.put("/", validateBearer, updateanime, async (req: any, res: any) => {
   if (req.header("content-type") !== "application/json")
-    return res.json(new ErrorRes("Header must be application/json"));
+    return res.json(new ErrorRes("Error", "Header must be application/json"));
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.json(new FailRes(errors));
+    return res.json(new FailRes("Fail", errors));
   }
   try {
-    const aniput = await Anime.findOne({
+    const aniput: IAnime = await Anime.findOne({
       aniId: req.body.aniId,
     });
     if (aniput === null) {
-      return res.json(new ErrorRes("the id was not found"));
+      return res.json(new ErrorRes("Error", "the id was not found"));
     }
-    var newani = {};
+    let newani: { title: string; description: string };
     newani.title = aniput.title;
     newani.description = aniput.description;
 
-    if (typeof req.body.title !== "null" || "undefined") {
+    if (typeof req.body.title !== "undefined") {
       newani.title = req.body.title;
     }
-    if (typeof req.body.description !== "null" || "undefined") {
+
+    if (typeof req.body.description !== "undefined") {
       newani.description = req.body.description;
     }
 
@@ -130,7 +139,7 @@ router.put("/", validateBearer, updateanime, async (req, res) => {
       { aniId: req.body.aniId },
       { title: newani.title, description: newani.description }
     );
-    return res.json(new SuccessRes(result));
+    return res.json(new SuccessRes("Success", result));
   } catch (err) {
     console.log("error updating item", err);
     res.json(new ErrorRes("Something went horribly wrong, try again later"));
@@ -138,10 +147,10 @@ router.put("/", validateBearer, updateanime, async (req, res) => {
 });
 
 // Route for deleting anime item
-router.delete("/", validateBearer, deleteanime, async (req, res) => {
+router.delete("/", validateBearer, deleteanime, async (req: any, res: any) => {
   const errors = validationResult(deleteanime);
   if (!errors.isEmpty) {
-    return res.json(new FailRes(errors));
+    return res.json(new FailRes("Fail", errors));
   }
   try {
     const aniput = await Anime.findOne({
@@ -151,11 +160,11 @@ router.delete("/", validateBearer, deleteanime, async (req, res) => {
       return res.json(new ErrorRes("the id was not found"));
     }
     const result = await Anime.deleteOne({ aniId: req.body.aniId });
-    res.json(new SuccessRes(result));
+    res.json(new SuccessRes("Success", result));
   } catch (err) {
     console.log("error deleting item", err);
     res.json(new ErrorRes("Something went horribly wrong, try again later"));
   }
 });
 
-module.exports = router;
+export default router;

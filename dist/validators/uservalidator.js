@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+import { body } from "express-validator";
 const user = [
     body("email")
         .exists()
@@ -18,4 +18,4 @@ const user = [
         .isLength({ min: 6 })
         .withMessage("Password is too short (min: 6)"),
 ];
-module.exports = user;
+export default user;
