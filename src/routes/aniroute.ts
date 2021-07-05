@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
 import { Anime, IAnime } from "../moodles/anime.js";
-import AniList from "../moodles/anilist.js";
 import { ErrorRes, SuccessRes, FailRes } from "../responses.js";
 import newanimeitem from "../validators/anivalidator.js";
 import updateanime from "../validators/updatevalidator.js";

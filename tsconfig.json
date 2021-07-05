@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "allowJs": true,
+    "checkJs": true,
     "target": "ESNext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
